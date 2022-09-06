@@ -5,6 +5,10 @@ const cors = require('cors');
 
 const app = express();
 
+app.get('/', (req, res) => {
+    res.send('Hello World')
+})
+
 app.use(fileUpload({
     useTempFiles: true,
     tempFileDir: './upload'
