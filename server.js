@@ -22,12 +22,18 @@
 // console.log('Server on port 3000');
 
 const express = require('express');
+const fileUpload = require('express-fileupload');
 
 const app = express();
 
 app.get('/', (req, res) => {
     res.send('Hello World simulacr')
 })
+
+app.use(fileUpload({
+    useTempFiles: true,
+    tempFileDir: './upload'
+}));
 
 app.listen(3000);
 console.log('Server on port 3000');
