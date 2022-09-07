@@ -1,33 +1,37 @@
-import dotenv from 'dotenv';
-import aws from 'aws-sdk';
-import crypto from 'crypto';
-import { promisify } from "util"
-const randomBytes = promisify(crypto.randomBytes)
+require('dotenv').config()
 
-dotenv.config();
+const { S3Client, PutObjectCommand } = require('@aws-sdk/client-s3')
+const fs = require('fs')
 
-const region = 'sa-east-1';
-const bucketName = 'tests-simulacr';
-const accessKeyId = process.env.AWS_ACCESS_KEY_ID;
-const secretAccessKey = process.env.AWS_SECRET_ACCESS_KEY;
+const AWS_PUBLIC_KEY = process.env.AWS_PUBLIC_KEY
+const AWS_SECRET_KEY = process.env.AWS_SECRET_KEY
+const AWS_BUCKET_NAME = process.env.AWS_BUCKET_NAME
+const AWS_BUCKET_REGION = process.env.AWS_BUCKET_REGION
 
-const s3 = new aws.S3({
-    region,
-    accessKeyId,
-    secretAccessKey,
-    signatureVersion: '4'
-});
-
-export async function generateUploadURL() {
-    const rawBytes = await randomBytes(16)
-    const imageName = rawBytes.toString('hex')
-  
-    const params = ({
-      Bucket: bucketName,
-      Key: imageName,
-      Expires: 180
-    })
-    
-    const uploadURL = await s3.getSignedUrlPromise('putObject', params)
-    return uploadURL
+const client = new S3Client({
+  region: AWS_BUCKET_REGION,
+  credentials: {
+    accessKeyId: AWS_PUBLIC_KEY,
+    secretAccessKey: AWS_SECRET_KEY
   }
+})
+
+async function uploadFile(file) {
+
+  const stream = fs.createReadStream(file.tempFilePath)
+
+  const uploadParams = {
+    Bucket: AWS_BUCKET_NAME,
+    Key: file.name,
+    Body: stream
+  }
+
+  const command = new PutObjectCommand(uploadParams)
+
+  return await client.send(command)
+
+}
+
+module.exports = {
+  uploadFile
+}
