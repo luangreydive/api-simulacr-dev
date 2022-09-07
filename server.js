@@ -24,6 +24,7 @@
 const express = require('express');
 const fileUpload = require('express-fileupload');
 const fileRouter = require('./files.routes');
+const cors = require('cors');
 
 const app = express();
 
@@ -35,6 +36,8 @@ app.use(fileUpload({
     useTempFiles: true,
     tempFileDir: './upload'
 }));
+
+app.use(cors());
 
 app.use(fileRouter);
 
