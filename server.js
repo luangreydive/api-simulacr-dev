@@ -10,10 +10,10 @@ app.get('/', (req, res) => {
     res.send('Hello World simulacr, actualizado')
 })
 
-// app.use(fileUpload({
-//     useTempFiles: true,
-//     tempFileDir: './upload'
-// }));
+app.use(fileUpload({
+    useTempFiles: true,
+    tempFileDir: './upload'
+}));
 
 app.use(cors());
 
