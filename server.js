@@ -7,6 +7,7 @@ const cors = require('cors');
 const app = express();
 
 app.get('/', (req, res) => {
+    res.header("Access-Control-Allow-Origin", "*");
     res.send('Hello World simulacr, actualizado')
 })
 
