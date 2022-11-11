@@ -16,14 +16,14 @@ const client = new S3Client({
   }
 })
 
-async function uploadFile(file) {
+async function uploadFile(file, cliente, id) {
 
-  const stream = fs.createReadStream(file.tempFilePath)
-  const cliente = file.name.slice(0, file.name.indexOf('+'))
-  const id = file.name.slice(file.name.indexOf('_') + 1, file.name.indexOf('.'))
+  const stream = fs.createReadStream(file)
+  // const cliente = file.name.slice(0, file.name.indexOf('+'))
+  // const id = file.name.slice(file.name.indexOf('_') + 1, file.name.indexOf('.'))
   const uploadParams = {
     Bucket: AWS_BUCKET_NAME,
-    Key: file.name,
+    Key: `${cliente}_${id}.webm`,
     Body: stream,
     Metadata: {
       'Cliente': cliente,
